@@ -1,179 +1,281 @@
 // pages/InterviewPrep.jsx
-// Technical Interview Preparation with subject categories, sample questions, and explanations.
+// Technical Interview Preparation platform with categorized subjects, keyword search, and interactive Q&A.
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Layout from '../components/Layout';
+import { INTERVIEW_SUBJECTS, SUBJECT_CATEGORIES } from '../data/interviewData';
 
 function InterviewPrep() {
-  const [activeCategory, setActiveCategory] = useState('DBMS');
-  const [expandedQuestion, setExpandedQuestion] = useState(null);
+  // Category filter state ('All' | 'Programming Languages' | 'Core Computer Science')
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Curated categories and top placement interview questions
-  const interviewData = {
-    DBMS: {
-      title: 'Database Management Systems (DBMS)',
-      desc: 'Relational algebra, SQL queries, indexing, normalization, and ACID properties.',
-      questions: [
-        {
-          q: 'What are ACID properties in a database transaction?',
-          a: 'ACID stands for:\n• Atomicity: Entire transaction succeeds or completely rolls back.\n• Consistency: Database remains in a valid state before and after transaction.\n• Isolation: Multiple concurrent transactions do not interfere with each other.\n• Durability: Once committed, changes survive even in system failures.'
-        },
-        {
-          q: 'Explain the difference between Primary Key, Foreign Key, and Unique Key.',
-          a: '• Primary Key: Uniquely identifies each row in a table. Cannot contain NULL values. Only one per table.\n• Unique Key: Uniquely identifies rows but allows a single NULL value (in most DBs).\n• Foreign Key: Refers to the primary key of another table, establishing a relationship and enforcing referential integrity.'
-        },
-        {
-          q: 'What is Database Normalization and why is it used?',
-          a: 'Normalization is the process of organizing relational tables to minimize data redundancy and eliminate anomalies (Insertion, Deletion, Update). The main normal forms are 1NF, 2NF, 3NF, and BCNF.'
-        },
-        {
-          q: 'How does B-Tree / B+Tree Indexing speed up SQL queries?',
-          a: 'Indexes create a balanced tree data structure over indexed columns, reducing lookups from O(N) full table scan down to O(log N) search time, optimizing disk I/O operations.'
-        }
-      ]
-    },
-    OS: {
-      title: 'Operating Systems (OS)',
-      desc: 'Process scheduling, virtual memory, multithreading, deadlocks, and synchronization.',
-      questions: [
-        {
-          q: 'What is the difference between a Process and a Thread?',
-          a: '• Process: An executing program with its own dedicated memory address space (heavyweight).\n• Thread: A light unit of execution within a process that shares memory and resources with other threads in the same process.'
-        },
-        {
-          q: 'What are the four necessary conditions for a Deadlock?',
-          a: '1. Mutual Exclusion: At least one resource must be held in a non-shareable mode.\n2. Hold and Wait: A process holds resources while requesting new ones.\n3. No Preemption: Resources cannot be forcibly taken away.\n4. Circular Wait: A closed chain of processes exists where each waits for a resource held by the next.'
-        },
-        {
-          q: 'Explain Virtual Memory and Paging.',
-          a: 'Virtual memory allows execution of processes that may not be completely in physical RAM. Paging divides virtual memory into fixed-size blocks (pages) and physical memory into frames, mapped by a Page Table.'
-        }
-      ]
-    },
-    CN: {
-      title: 'Computer Networks (CN)',
-      desc: 'OSI 7-layer model, TCP vs UDP, HTTP/HTTPS, DNS, and socket programming basics.',
-      questions: [
-        {
-          q: 'Explain the difference between TCP and UDP.',
-          a: '• TCP (Transmission Control Protocol): Connection-oriented, reliable, guarantees packet ordering and delivery via 3-way handshake, error checking, and flow control.\n• UDP (User Datagram Protocol): Connectionless, lightweight, faster, does not guarantee delivery (used in video streaming, gaming, DNS).'
-        },
-        {
-          q: 'What happens when you enter a URL in a browser and press Enter?',
-          a: '1. Browser checks cache (browser, OS, router).\n2. DNS lookup resolves hostname to an IP address.\n3. TCP 3-way handshake establishes connection (SYN, SYN-ACK, ACK).\n4. TLS handshake occurs if HTTPS.\n5. Browser sends HTTP GET request.\n6. Web server processes request and returns HTTP response (HTML, CSS, JS).\n7. Browser parses and renders the web page.'
-        },
-        {
-          q: 'What is the purpose of the 7 layers in the OSI Model?',
-          a: '1. Physical (bits)\n2. Data Link (frames, MAC)\n3. Network (packets, IP routing)\n4. Transport (segments, TCP/UDP)\n5. Session (dialog control)\n6. Presentation (encryption, formatting)\n7. Application (HTTP, FTP, SMTP).'
-        }
-      ]
-    },
-    OOP: {
-      title: 'Object-Oriented Programming (OOP)',
-      desc: 'Encapsulation, Abstraction, Inheritance, Polymorphism, and SOLID principles.',
-      questions: [
-        {
-          q: 'What are the four pillars of Object-Oriented Programming?',
-          a: '1. Encapsulation: Bundling data and methods into a single unit (class) and restricting direct access.\n2. Abstraction: Hiding internal implementation details and exposing only essential features.\n3. Inheritance: Reusing properties and methods from a parent class.\n4. Polymorphism: Ability to present the same interface for differing underlying data types (Method Overloading and Overriding).'
-        },
-        {
-          q: 'What is the difference between Abstract Class and Interface?',
-          a: '• Abstract Class: Can have both concrete (implemented) methods and abstract methods. A class can inherit only one abstract class.\n• Interface: Blueprint of a class with method declarations (pure abstraction). A class can implement multiple interfaces.'
-        }
-      ]
-    },
-    SystemDesign: {
-      title: 'System Design Basics',
-      desc: 'Scalability, Load Balancers, Caching, Database Sharding, and Microservices.',
-      questions: [
-        {
-          q: 'What is Horizontal vs Vertical Scaling?',
-          a: '• Vertical Scaling (Scale Up): Adding more CPU, RAM, or storage to an existing single machine.\n• Horizontal Scaling (Scale Out): Adding more servers or machines to distribute the load across a cluster.'
-        },
-        {
-          q: 'What is a Load Balancer and why is it essential?',
-          a: 'A load balancer distributes incoming network traffic across multiple backend servers using algorithms like Round Robin, Least Connections, or IP Hash, preventing single points of failure.'
-        },
-        {
-          q: 'How does Caching (e.g., Redis) improve system performance?',
-          a: 'Caching stores frequently requested data in fast, in-memory storage, drastically reducing database load and lowering response latencies from milliseconds to microseconds.'
-        }
-      ]
+  // Subject filter state ('all' | specific subject id like 'c', 'dbms', etc.)
+  const [selectedSubjectId, setSelectedSubjectId] = useState('all');
+
+  // Search keyword state
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Set of expanded question IDs for accordion toggling
+  const [expandedIds, setExpandedIds] = useState(new Set());
+
+  // 1. Available subjects based on category selection
+  const availableSubjects = useMemo(() => {
+    if (selectedCategory === 'All') return INTERVIEW_SUBJECTS;
+    return INTERVIEW_SUBJECTS.filter((s) => s.category === selectedCategory);
+  }, [selectedCategory]);
+
+  // Reset subject filter if it's not in the newly selected category
+  const handleCategoryChange = (cat) => {
+    setSelectedCategory(cat);
+    if (cat !== 'All') {
+      const match = INTERVIEW_SUBJECTS.find((s) => s.id === selectedSubjectId);
+      if (match && match.category !== cat) {
+        setSelectedSubjectId('all');
+      }
     }
   };
 
-  const categories = Object.keys(interviewData);
+  // 2. Filter questions based on Category, Subject, and Search Term
+  const filteredQuestions = useMemo(() => {
+    // Determine which subjects to include
+    let targetSubjects = availableSubjects;
+    if (selectedSubjectId !== 'all') {
+      targetSubjects = targetSubjects.filter((s) => s.id === selectedSubjectId);
+    }
 
-  const toggleAccordion = (idx) => {
-    setExpandedQuestion(expandedQuestion === idx ? null : idx);
+    // Flatten questions with parent subject metadata
+    const allQuestions = [];
+    targetSubjects.forEach((subject) => {
+      subject.questions.forEach((q) => {
+        allQuestions.push({
+          ...q,
+          subjectName: subject.name,
+          subjectIcon: subject.icon,
+          subjectCategory: subject.category
+        });
+      });
+    });
+
+    // Apply keyword search
+    const cleanSearch = searchTerm.trim().toLowerCase();
+    if (!cleanSearch) return allQuestions;
+
+    return allQuestions.filter((item) => {
+      const matchQ = item.q.toLowerCase().includes(cleanSearch);
+      const matchA = item.a.toLowerCase().includes(cleanSearch);
+      const matchKeywords = item.keywords && item.keywords.some((kw) => kw.toLowerCase().includes(cleanSearch));
+      const matchSubject = item.subjectName.toLowerCase().includes(cleanSearch);
+
+      return matchQ || matchA || matchKeywords || matchSubject;
+    });
+  }, [availableSubjects, selectedSubjectId, searchTerm]);
+
+  // Toggle single question accordion
+  const toggleAccordion = (id) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
   };
+
+  // Expand all currently filtered questions
+  const handleExpandAll = () => {
+    const allIds = new Set(filteredQuestions.map((q) => q.id));
+    setExpandedIds(allIds);
+  };
+
+  // Collapse all questions
+  const handleCollapseAll = () => {
+    setExpandedIds(new Set());
+  };
+
+  // Clear all filters and search input
+  const handleResetFilters = () => {
+    setSelectedCategory('All');
+    setSelectedSubjectId('all');
+    setSearchTerm('');
+    setExpandedIds(new Set());
+  };
+
+  // Currently active subject metadata for the banner (if a single subject is picked)
+  const activeSubjectMeta = selectedSubjectId !== 'all'
+    ? INTERVIEW_SUBJECTS.find((s) => s.id === selectedSubjectId)
+    : null;
 
   return (
     <Layout>
+      {/* Page Header */}
       <div className="page-header">
         <div>
           <h1 className="page-title">Technical Interview Preparation</h1>
-          <p className="page-subtitle">Master core Computer Science fundamentals asked in placement interviews.</p>
+          <p className="page-subtitle">
+            Master placement questions across Programming Languages and Core Computer Science subjects.
+          </p>
+        </div>
+        <div className="header-badge">
+          <span>{filteredQuestions.length} Questions Available</span>
         </div>
       </div>
 
-      {/* Subject Navigation Tabs */}
-      <section className="filter-bar">
-        <span className="filter-label">Select Subject:</span>
+      {/* 1. Search Bar */}
+      <div className="interview-search-bar">
+        <span className="search-icon-left">🔍</span>
+        <input
+          type="text"
+          className="interview-search-input"
+          placeholder="Search questions by topic, keyword, or concept (e.g., deadlock, pointers, indexing, virtual memory, GIL)..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            className="search-clear-btn"
+            title="Clear search"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* 2. Category Filter Tabs */}
+      <div className="category-filter-row">
+        <span className="filter-label">Domain:</span>
+        <button
+          onClick={() => handleCategoryChange('All')}
+          className={`category-tag-btn ${selectedCategory === 'All' ? 'active' : ''}`}
+        >
+          All Domains
+        </button>
+        <button
+          onClick={() => handleCategoryChange(SUBJECT_CATEGORIES.PROGRAMMING)}
+          className={`category-tag-btn ${selectedCategory === SUBJECT_CATEGORIES.PROGRAMMING ? 'active' : ''}`}
+        >
+          💻 Programming Languages
+        </button>
+        <button
+          onClick={() => handleCategoryChange(SUBJECT_CATEGORIES.CORE_CS)}
+          className={`category-tag-btn ${selectedCategory === SUBJECT_CATEGORIES.CORE_CS ? 'active' : ''}`}
+        >
+          🗄️ Core Computer Science
+        </button>
+      </div>
+
+      {/* 3. Subject Pills */}
+      <section className="filter-bar" style={{ marginBottom: '1.5rem' }}>
+        <span className="filter-label">Subject:</span>
         <div className="filter-pills">
-          {categories.map((cat) => (
+          <button
+            onClick={() => setSelectedSubjectId('all')}
+            className={`pill-btn ${selectedSubjectId === 'all' ? 'pill-active' : ''}`}
+          >
+            All Subjects
+          </button>
+          {availableSubjects.map((subject) => (
             <button
-              key={cat}
-              onClick={() => {
-                setActiveCategory(cat);
-                setExpandedQuestion(null);
-              }}
-              className={`pill-btn ${activeCategory === cat ? 'pill-active' : ''}`}
+              key={subject.id}
+              onClick={() => setSelectedSubjectId(subject.id)}
+              className={`pill-btn ${selectedSubjectId === subject.id ? 'pill-active' : ''}`}
             >
-              {cat}
+              <span>{subject.icon}</span> {subject.name}
             </button>
           ))}
         </div>
       </section>
 
-      {/* Subject Overview Card */}
-      <section className="dashboard-card info-card">
-        <div className="subject-info-banner">
-          <span className="subject-icon">🎯</span>
-          <div>
-            <h3>{interviewData[activeCategory].title}</h3>
-            <p>{interviewData[activeCategory].desc}</p>
+      {/* 4. Subject Overview Banner (shown when a single subject is selected) */}
+      {activeSubjectMeta && !searchTerm && (
+        <section className="dashboard-card info-card" style={{ marginBottom: '1.5rem' }}>
+          <div className="subject-info-banner">
+            <span className="subject-icon">{activeSubjectMeta.icon}</span>
+            <div>
+              <h3>{activeSubjectMeta.name}</h3>
+              <p>{activeSubjectMeta.description}</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Questions Accordion List */}
+      {/* 5. Questions Accordion List */}
       <section className="dashboard-card">
-        <h3 className="card-section-title">
-          Frequently Asked Questions ({interviewData[activeCategory].questions.length})
-        </h3>
-        <div className="accordion-list">
-          {interviewData[activeCategory].questions.map((item, idx) => {
-            const isExpanded = expandedQuestion === idx;
-            return (
-              <div key={idx} className="accordion-item">
-                <button
-                  className="accordion-header"
-                  onClick={() => toggleAccordion(idx)}
-                >
-                  <span className="q-number">Q{idx + 1}.</span>
-                  <span className="q-text">{item.q}</span>
-                  <span className="accordion-arrow">{isExpanded ? '▲' : '▼'}</span>
-                </button>
-                {isExpanded && (
-                  <div className="accordion-body">
-                    <pre className="answer-text">{item.a}</pre>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+        <div className="accordion-top-bar">
+          <h3 className="card-section-title" style={{ margin: 0 }}>
+            {searchTerm ? `Search Results for "${searchTerm}"` : activeSubjectMeta ? `${activeSubjectMeta.name} Questions` : 'All Interview Questions'} ({filteredQuestions.length})
+          </h3>
+          {filteredQuestions.length > 0 && (
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={handleExpandAll}
+                className="btn btn-outline btn-sm"
+              >
+                Expand All
+              </button>
+              <button
+                onClick={handleCollapseAll}
+                className="btn btn-outline btn-sm"
+              >
+                Collapse All
+              </button>
+            </div>
+          )}
         </div>
+
+        {filteredQuestions.length === 0 ? (
+          /* Empty / No Results State */
+          <div className="empty-notice" style={{ padding: '3rem 1rem' }}>
+            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.75rem' }}>🔍</span>
+            <h4>No matching questions found</h4>
+            <p style={{ maxWidth: '480px', margin: '0.5rem auto 1.25rem auto' }}>
+              {searchTerm ? (
+                <>No questions found matching "<strong>{searchTerm}</strong>". Try searching for different keywords or checking spelling.</>
+              ) : (
+                <>No questions found for the selected category filter.</>
+              )}
+            </p>
+            <button onClick={handleResetFilters} className="btn btn-primary btn-sm">
+              Reset Filters & Show All
+            </button>
+          </div>
+        ) : (
+          <div className="accordion-list">
+            {filteredQuestions.map((item, idx) => {
+              const isExpanded = expandedIds.has(item.id);
+              return (
+                <div key={item.id} className="accordion-item">
+                  <button
+                    className="accordion-header"
+                    onClick={() => toggleAccordion(item.id)}
+                    aria-expanded={isExpanded}
+                  >
+                    <span className="q-number">Q{idx + 1}.</span>
+                    {/* Subject badge shown when browsing all subjects or searching */}
+                    {(selectedSubjectId === 'all' || searchTerm) && (
+                      <span className="subject-badge-pill">
+                        {item.subjectIcon} {item.subjectName}
+                      </span>
+                    )}
+                    <span className="q-text">{item.q}</span>
+                    <span className="accordion-arrow">{isExpanded ? '▲' : '▼'}</span>
+                  </button>
+
+                  {isExpanded && (
+                    <div className="accordion-body">
+                      <pre className="answer-text">{item.a}</pre>
+                      {item.code && (
+                        <pre className="answer-code-block">{item.code}</pre>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
     </Layout>
   );
