@@ -6,6 +6,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
+const dashboardRoutes = require('./routes/dashboard');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -35,6 +36,9 @@ app.use(express.json());
 
 // Mount authentication routes
 app.use('/api/auth', authRoutes);
+
+// Mount dashboard routes
+app.use('/api/dashboard', dashboardRoutes);
 
 // Root welcome route
 app.get('/', (req, res) => {
