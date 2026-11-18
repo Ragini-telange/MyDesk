@@ -1,10 +1,13 @@
 // components/Sidebar.jsx
-// Sidebar navigation for student workspace sections.
+// Sidebar navigation for student workspace sections with live user profile and logout.
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: '📊' },
@@ -14,14 +17,19 @@ function Sidebar() {
     { path: '/github', label: 'GitHub Sync', icon: '🐙' },
   ];
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <aside className="sidebar">
-      {/* Student Profile Card Placeholder */}
+      {/* Student Profile Card (Dynamic user information from AuthContext) */}
       <div className="sidebar-profile">
         <div className="avatar-placeholder">🎓</div>
         <div className="profile-info">
-          <h4 className="student-name">Student Account</h4>
-          <p className="student-role">Placement Aspirant</p>
+          <h4 className="student-name">{user?.name || 'Student Account'}</h4>
+          <p className="student-role">{user?.email || 'Placement Aspirant'}</p>
         </div>
       </div>
 
@@ -43,10 +51,17 @@ function Sidebar() {
         })}
       </nav>
 
-      {/* Quick Phase Notice */}
+      {/* Logout Action & Phase Info */}
       <div className="sidebar-footer">
+        <button
+          onClick={handleLogout}
+          className="btn btn-outline btn-sm btn-block"
+          style={{ marginBottom: '0.75rem', color: 'var(--danger-text)', borderColor: '#fecaca' }}
+        >
+          🚪 Sign Out
+        </button>
         <p className="sidebar-footer-title">MyDesk v1.0</p>
-        <p className="sidebar-footer-sub">Phase 2: Frontend Design</p>
+        <p className="sidebar-footer-sub">Phase 3: Auth Active</p>
       </div>
     </aside>
   );

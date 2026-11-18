@@ -1,12 +1,18 @@
 // pages/Login.jsx
-// Student Login page with form inputs and link to register.
+// Student Login page connected to the backend API.
 
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+
+  // Route to redirect to after successful login (default: /dashboard)
+  const from = location.state?.from?.pathname || '/dashboard';
 
   // Local state for form inputs
   const [formData, setFormData] = useState({
@@ -14,7 +20,9 @@ function Login() {
     password: ''
   });
 
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle input change
   const handleChange = (e) => {
@@ -25,20 +33,49 @@ function Login() {
     }));
   };
 
-  // Handle form submission (Phase 2 navigation placeholder)
-  const handleSubmit = (e) => {
+  // Handle form submission and backend login
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
 
-    if (!formData.email || !formData.password) {
-      setMessage('Please enter both email and password.');
+    if (!formData.email.trim() || !formData.password) {
+      setError('Please enter both email and password.');
       return;
     }
 
-    // In Phase 2, we simulate successful client-side navigation to the dashboard
-    setMessage('Login successful! Redirecting to dashboard...');
-    setTimeout(() => {
-      navigate('/dashboard');
-    }, 600);
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Invalid email or password.');
+      }
+
+      setSuccess('Login successful! Redirecting...');
+      // Save token and user into AuthContext and localStorage
+      login(data.token, data.user);
+
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 700);
+    } catch (err) {
+      setError(err.message || 'Unable to connect to the server. Please verify the backend is running.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,7 +90,8 @@ function Login() {
             <p className="auth-subtitle">Sign in to your MyDesk student workspace</p>
           </div>
 
-          {message && <div className="alert-box">{message}</div>}
+          {error && <div className="alert-box alert-error">{error}</div>}
+          {success && <div className="alert-box alert-success">{success}</div>}
 
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
@@ -66,6 +104,7 @@ function Login() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -79,11 +118,16 @@ function Login() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-block">
-              Sign In to MyDesk
+            <button
+              type="submit"
+              className="btn btn-primary btn-block"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Signing In...' : 'Sign In to MyDesk'}
             </button>
           </form>
 
@@ -93,9 +137,6 @@ function Login() {
               <Link to="/register" className="auth-link">
                 Register here
               </Link>
-            </p>
-            <p className="auth-note">
-              * Note: Backend authentication will be connected in Phase 3.
             </p>
           </div>
         </div>

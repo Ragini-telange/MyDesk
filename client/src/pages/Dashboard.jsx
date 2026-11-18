@@ -3,8 +3,10 @@
 
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { useAuth } from '../context/AuthContext';
 
 function Dashboard() {
+  const { user } = useAuth();
   return (
     <Layout>
       <div className="page-header">
@@ -22,9 +24,11 @@ function Dashboard() {
         <div className="profile-banner-content">
           <div className="profile-avatar-large">👨‍🎓</div>
           <div className="profile-details">
-            <h2 className="welcome-heading">Welcome back, Alex Sharma!</h2>
+            <h2 className="welcome-heading">
+              Welcome back, {user?.name || 'Student'}!
+            </h2>
             <p className="profile-meta">
-              Computer Science & Engineering &bull; 7th Semester &bull; Target: Software Development Engineer (SDE)
+              {user?.email || 'Student Account'} &bull; Target: Software Development Engineer (SDE)
             </p>
             <div className="profile-quick-tags">
               <span className="tag">GPA: 8.7</span>

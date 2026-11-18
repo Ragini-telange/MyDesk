@@ -1,7 +1,10 @@
 // App.jsx
-// Main router configuration linking all MyDesk pages.
+// Main router configuration linking all MyDesk pages with global AuthProvider and ProtectedRoute wrappers.
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -14,24 +17,61 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Student Workspace Routes */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/todo" element={<TodoList />} />
-        <Route path="/dsa" element={<DsaPractice />} />
-        <Route path="/interview" element={<InterviewPrep />} />
-        <Route path="/github" element={<GitHubIntegration />} />
+          {/* Protected Student Workspace Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/todo"
+            element={
+              <ProtectedRoute>
+                <TodoList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dsa"
+            element={
+              <ProtectedRoute>
+                <DsaPractice />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/interview"
+            element={
+              <ProtectedRoute>
+                <InterviewPrep />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/github"
+            element={
+              <ProtectedRoute>
+                <GitHubIntegration />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Fallback route for unknown paths */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Router>
+          {/* Fallback route for unknown paths */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

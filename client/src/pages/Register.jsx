@@ -1,12 +1,14 @@
 // pages/Register.jsx
-// Student Registration page with input fields and validation.
+// Student Registration page connected to the backend API.
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
 
 function Register() {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   // Local state for registration form fields
   const [formData, setFormData] = useState({
@@ -18,6 +20,7 @@ function Register() {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Handle changes in form inputs
   const handleChange = (e) => {
@@ -28,14 +31,14 @@ function Register() {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle form submission and backend registration
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    // Basic frontend validations
-    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+    // 1. Frontend validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password) {
       setError('Please fill in all the required fields.');
       return;
     }
@@ -50,11 +53,40 @@ function Register() {
       return;
     }
 
-    // In Phase 2, we simulate registration success and navigate to login
-    setSuccess('Registration successful! Redirecting to login...');
-    setTimeout(() => {
-      navigate('/login');
-    }, 700);
+    setIsSubmitting(true);
+
+    try {
+      // 2. Call backend registration endpoint
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          password: formData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Registration failed. Please try again.');
+      }
+
+      // 3. Registration succeeded: log the student in immediately with the returned JWT
+      setSuccess('Account created successfully! Redirecting to your dashboard...');
+      login(data.token, data.user);
+
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 1000);
+    } catch (err) {
+      setError(err.message || 'Server error. Please ensure the backend is running.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -83,6 +115,7 @@ function Register() {
                 value={formData.name}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -96,6 +129,7 @@ function Register() {
                 value={formData.email}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -109,6 +143,7 @@ function Register() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
@@ -122,11 +157,16 @@ function Register() {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 required
+                disabled={isSubmitting}
               />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-block">
-              Create MyDesk Account
+            <button
+              type="submit"
+              className="btn btn-primary btn-block"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Creating Account...' : 'Create MyDesk Account'}
             </button>
           </form>
 
@@ -136,9 +176,6 @@ function Register() {
               <Link to="/login" className="auth-link">
                 Sign in here
               </Link>
-            </p>
-            <p className="auth-note">
-              * Note: User records will be saved to MongoDB in Phase 3.
             </p>
           </div>
         </div>

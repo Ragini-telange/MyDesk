@@ -1,13 +1,21 @@
 // components/Navbar.jsx
-// Main navigation bar rendered at the top of pages.
+// Main navigation bar rendered at the top of pages with dynamic auth actions.
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   // Helper function to check if a route is currently active
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header className="navbar">
@@ -59,14 +67,27 @@ function Navbar() {
           </Link>
         </nav>
 
-        {/* User Auth Buttons / Links */}
+        {/* User Auth Buttons / Profile Actions */}
         <div className="navbar-actions">
-          <Link to="/login" className="btn btn-outline">
-            Login
-          </Link>
-          <Link to="/register" className="btn btn-primary">
-            Register
-          </Link>
+          {isAuthenticated ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>
+                👋 {user?.name || 'Student'}
+              </span>
+              <button onClick={handleLogout} className="btn btn-outline btn-sm">
+                Logout
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link to="/login" className="btn btn-outline">
+                Login
+              </Link>
+              <Link to="/register" className="btn btn-primary">
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
