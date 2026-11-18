@@ -51,6 +51,14 @@ function App() {
             }
           />
           <Route
+            path="/dsa/:id"
+            element={
+              <ProtectedRoute>
+                <DsaPractice />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/interview"
             element={
               <ProtectedRoute>

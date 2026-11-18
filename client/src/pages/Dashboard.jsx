@@ -142,8 +142,17 @@ function Dashboard() {
                 style={{ width: `${(stats.dsa.solvedCount / stats.dsa.totalCount) * 100}%` }}
               ></div>
             </div>
+            {stats.dsa.attemptedCount > 0 && (
+              <div className="progress-breakdown" style={{ marginBottom: '0.6rem' }}>
+                <span className="badge-stat" style={{ padding: '0.15rem 0.5rem', fontSize: '0.78rem' }}>
+                  Attempted: {stats.dsa.attemptedCount}
+                </span>
+              </div>
+            )}
             <div className="module-status-box">
-              <span className="status-pill status-empty">● {stats.dsa.status}</span>
+              <span className={`status-pill ${stats.dsa.solvedCount > 0 ? 'status-active' : stats.dsa.attemptedCount > 0 ? 'status-pending' : 'status-empty'}`}>
+                ● {stats.dsa.status}
+              </span>
               <p className="module-status-message">{stats.dsa.message}</p>
             </div>
           </div>

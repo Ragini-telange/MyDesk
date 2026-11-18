@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Task = require('../models/Task');
+const Submission = require('../models/Submission');
 const { protect } = require('../middleware/auth');
 
 // -------------------------------------------------------------
@@ -43,7 +44,31 @@ router.get('/', protect, async (req, res, next) => {
       }
     }
 
-    // 3. Prepare real dashboard metrics
+    // 3. Query real DSA challenge progress from MongoDB for the authenticated student (Phase 7.4)
+    const solvedQuestionIds = await Submission.distinct('questionId', {
+      user: req.user._id,
+      status: 'Accepted'
+    });
+    const attemptedQuestionIds = await Submission.distinct('questionId', {
+      user: req.user._id
+    });
+
+    const solvedDsaCount = solvedQuestionIds.length;
+    const attemptedDsaCount = attemptedQuestionIds.length;
+    const totalDsaCount = 100;
+
+    let dsaStatus = 'Not started';
+    let dsaMessage = 'No coding questions solved yet. Start practicing in the DSA module.';
+
+    if (solvedDsaCount > 0) {
+      dsaStatus = `${solvedDsaCount} solved`;
+      dsaMessage = `You have successfully solved ${solvedDsaCount} of ${totalDsaCount} problems (${Math.round((solvedDsaCount / totalDsaCount) * 100)}% completed).`;
+    } else if (attemptedDsaCount > 0) {
+      dsaStatus = `${attemptedDsaCount} attempted`;
+      dsaMessage = `You have attempted ${attemptedDsaCount} problem${attemptedDsaCount > 1 ? 's' : ''}. Keep practicing to get your first solution accepted!`;
+    }
+
+    // 4. Prepare real dashboard metrics
     const dashboardData = {
       success: true,
       student: {
@@ -54,10 +79,11 @@ router.get('/', protect, async (req, res, next) => {
       },
       stats: {
         dsa: {
-          solvedCount: 0,
-          totalCount: 100,
-          status: 'Not started',
-          message: 'No coding questions solved yet. Start practicing in the DSA module.'
+          solvedCount: solvedDsaCount,
+          attemptedCount: attemptedDsaCount,
+          totalCount: totalDsaCount,
+          status: dsaStatus,
+          message: dsaMessage
         },
         tasks: {
           total: totalTasks,
