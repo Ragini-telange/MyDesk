@@ -163,10 +163,20 @@ function Dashboard() {
           <div className="metric-body">
             <div className="progress-number">
               <span className="current-val">{stats.tasks.pending}</span>
-              <span className="total-val">Pending Tasks</span>
+              <span className="total-val">Pending ({stats.tasks.total} Total)</span>
+            </div>
+            <div className="progress-breakdown" style={{ marginBottom: '0.6rem' }}>
+              <span className="badge-stat" style={{ padding: '0.15rem 0.5rem', fontSize: '0.78rem' }}>
+                Completed: {stats.tasks.completed}
+              </span>
+              <span className="badge-stat pending" style={{ padding: '0.15rem 0.5rem', fontSize: '0.78rem' }}>
+                Pending: {stats.tasks.pending}
+              </span>
             </div>
             <div className="module-status-box">
-              <span className="status-pill status-empty">● {stats.tasks.status}</span>
+              <span className={`status-pill ${stats.tasks.total > 0 && stats.tasks.pending === 0 ? 'status-connected' : 'status-empty'}`}>
+                ● {stats.tasks.status}
+              </span>
               <p className="module-status-message">{stats.tasks.message}</p>
             </div>
           </div>

@@ -1,15 +1,21 @@
 // server.js
 // Main entry point for the MyDesk backend API server.
 
+// Fix for Node.js DNS resolution issue with MongoDB Atlas SRV records on Windows
+const dns = require('node:dns');
+dns.setServers(['8.8.8.8', '1.1.1.1']);
+
 const express = require('express');
 const cors = require('cors');
+const path = require('node:path');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
+const taskRoutes = require('./routes/tasks');
 
-// Load environment variables from .env file
-dotenv.config();
+// Load environment variables from .env file (always relative to server folder)
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Initialize the Express application
 const app = express();
@@ -39,6 +45,9 @@ app.use('/api/auth', authRoutes);
 
 // Mount dashboard routes
 app.use('/api/dashboard', dashboardRoutes);
+
+// Mount task routes
+app.use('/api/tasks', taskRoutes);
 
 // Root welcome route
 app.get('/', (req, res) => {

@@ -4,6 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Task = require('../models/Task');
 const { protect } = require('../middleware/auth');
 
 // -------------------------------------------------------------
@@ -24,9 +25,25 @@ router.get('/', protect, async (req, res, next) => {
       });
     }
 
-    // 2. Prepare real dashboard metrics
-    // For modules whose persistent storage will be added in upcoming phases (To-Do & DSA),
-    // we return honest zero counts and "Not started" status instead of fake or hardcoded numbers.
+    // 2. Query real task statistics from MongoDB for the authenticated student
+    const totalTasks = await Task.countDocuments({ user: req.user._id });
+    const completedTasks = await Task.countDocuments({ user: req.user._id, completed: true });
+    const pendingTasks = await Task.countDocuments({ user: req.user._id, completed: false });
+
+    let taskStatus = 'No tasks created yet';
+    let taskMessage = 'No study tasks found. Create your daily study goals in the To-Do module.';
+
+    if (totalTasks > 0) {
+      if (pendingTasks === 0) {
+        taskStatus = 'All tasks completed';
+        taskMessage = 'Great job! All your study tasks are currently completed.';
+      } else {
+        taskStatus = `${pendingTasks} pending`;
+        taskMessage = `You have ${pendingTasks} task${pendingTasks > 1 ? 's' : ''} remaining in your planner.`;
+      }
+    }
+
+    // 3. Prepare real dashboard metrics
     const dashboardData = {
       success: true,
       student: {
@@ -43,11 +60,11 @@ router.get('/', protect, async (req, res, next) => {
           message: 'No coding questions solved yet. Start practicing in the DSA module.'
         },
         tasks: {
-          total: 0,
-          pending: 0,
-          completed: 0,
-          status: 'No tasks created yet',
-          message: 'No study tasks found. Create your daily study goals in the To-Do module.'
+          total: totalTasks,
+          pending: pendingTasks,
+          completed: completedTasks,
+          status: taskStatus,
+          message: taskMessage
         },
         interviewPrep: {
           status: 'Not started',
