@@ -205,6 +205,33 @@ function DsaPractice() {
     }
   };
 
+  // Retry or manually trigger GitHub synchronization for an accepted submission (Phase 8)
+  const [retryingSyncId, setRetryingSyncId] = useState(null);
+  const handleRetryGitHubSync = async (submissionId) => {
+    try {
+      setRetryingSyncId(submissionId);
+      const authToken = token || localStorage.getItem('mydesk_token');
+      const res = await fetch(`http://localhost:5000/api/github/sync/${submissionId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      const resJson = await res.json();
+      if (res.ok && resJson.success) {
+        fetchSubmissionsForProblem(activeWorkspaceProblem.id);
+      } else {
+        alert(resJson.message || 'GitHub synchronization failed. Please check repository settings in GitHub Sync tab.');
+      }
+    } catch (err) {
+      alert('Failed to retry GitHub sync: ' + err.message);
+    } finally {
+      setRetryingSyncId(null);
+    }
+  };
+
   // Run Code handler (OnlineCompiler.io Judge0-compatible execution for Phase 7.3)
   const handleRunCode = async () => {
     if (!activeWorkspaceProblem || isRunning || isSubmitting) return;
@@ -418,6 +445,19 @@ function DsaPractice() {
       if (status === 'Accepted') {
         lines.push(`🎉 ACCEPTED! All ${totalTestCases} test cases passed successfully!`);
         lines.push(`This problem is now recorded as Solved on your student dashboard.`);
+
+        if (resData.data.githubSync) {
+          const gh = resData.data.githubSync;
+          if (gh.status === 'Synced') {
+            lines.push(`\n🐙 GitHub: Solution synchronized to your repository!`);
+            if (gh.commitUrl) lines.push(`Commit: ${gh.commitUrl}`);
+          } else if (gh.status === 'Failed') {
+            lines.push(`\n⚠️ GitHub Sync: Could not upload to repository (${gh.error || 'Check settings'}).`);
+            lines.push(`You can retry synchronization in the Submissions tab.`);
+          } else if (gh.status === 'Not Connected') {
+            lines.push(`\n🐙 GitHub Sync: Not connected. (Connect in the GitHub tab to automatically upload solutions).`);
+          }
+        }
       } else if (status === 'Wrong Answer' && failedTestCase) {
         lines.push(`✗ Wrong Answer on Test Case ${failedTestCase.testCaseNumber} (${failedTestCase.name}):`);
         if (failedTestCase.isHidden) {
@@ -879,6 +919,7 @@ function DsaPractice() {
                                 <th>Passed</th>
                                 <th>Time</th>
                                 <th>Memory</th>
+                                <th>GitHub Sync</th>
                                 <th>Submitted At</th>
                                 <th style={{ textAlign: 'right' }}>Action</th>
                               </tr>
@@ -901,6 +942,57 @@ function DsaPractice() {
                                   </td>
                                   <td>{sub.runtime ? `${sub.runtime}s` : '0.00s'}</td>
                                   <td>{sub.memory ? `${sub.memory} KB` : 'N/A'}</td>
+                                  <td>
+                                    {sub.status !== 'Accepted' ? (
+                                      <span style={{ color: '#64748b', fontSize: '0.75rem' }}>—</span>
+                                    ) : sub.githubSyncStatus === 'Synced' ? (
+                                      <span className="submission-gh-badge gh-synced">
+                                        {sub.githubCommitUrl ? (
+                                          <a
+                                            href={sub.githubCommitUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ color: 'inherit', textDecoration: 'none' }}
+                                            title="View commit on GitHub"
+                                          >
+                                            🐙 Synced ↗
+                                          </a>
+                                        ) : (
+                                          '🐙 Synced'
+                                        )}
+                                      </span>
+                                    ) : sub.githubSyncStatus === 'Pending' ? (
+                                      <span className="submission-gh-badge gh-pending">⏳ Syncing...</span>
+                                    ) : sub.githubSyncStatus === 'Failed' ? (
+                                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                                        <span className="submission-gh-badge gh-failed" title={sub.githubSyncError || 'Sync failed'}>
+                                          Failed
+                                        </span>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRetryGitHubSync(sub._id)}
+                                          disabled={retryingSyncId === sub._id}
+                                          className="btn-sync-retry"
+                                          title="Retry GitHub sync"
+                                        >
+                                          {retryingSyncId === sub._id ? '...' : '↻'}
+                                        </button>
+                                      </div>
+                                    ) : (
+                                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                                        <span className="submission-gh-badge gh-not-connected">Not synced</span>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleRetryGitHubSync(sub._id)}
+                                          disabled={retryingSyncId === sub._id}
+                                          className="btn-sync-retry"
+                                          title="Sync this solution to connected GitHub repository"
+                                        >
+                                          {retryingSyncId === sub._id ? '...' : 'Sync'}
+                                        </button>
+                                      </div>
+                                    )}
+                                  </td>
                                   <td style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
                                     {new Date(sub.createdAt).toLocaleDateString()}{' '}
                                     {new Date(sub.createdAt).toLocaleTimeString([], {

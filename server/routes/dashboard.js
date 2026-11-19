@@ -6,6 +6,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Task = require('../models/Task');
 const Submission = require('../models/Submission');
+const GitHubIntegration = require('../models/GitHubIntegration');
 const { protect } = require('../middleware/auth');
 
 // -------------------------------------------------------------
@@ -68,7 +69,36 @@ router.get('/', protect, async (req, res, next) => {
       dsaMessage = `You have attempted ${attemptedDsaCount} problem${attemptedDsaCount > 1 ? 's' : ''}. Keep practicing to get your first solution accepted!`;
     }
 
-    // 4. Prepare real dashboard metrics
+    // 4. Query GitHub synchronization metrics (Phase 8)
+    const ghIntegration = await GitHubIntegration.findOne({
+      user: req.user._id,
+      isConnected: true
+    });
+
+    let githubSyncStats = {
+      isConnected: false,
+      username: null,
+      repoName: null,
+      syncedCount: 0,
+      status: 'Not connected',
+      message: 'Connect your personal GitHub account to sync solutions.'
+    };
+
+    if (ghIntegration) {
+      // Count unique (questionId, language) combinations successfully synced to GitHub
+      const syncedCount = await Submission.getUniqueSyncedCount(req.user._id);
+
+      githubSyncStats = {
+        isConnected: true,
+        username: ghIntegration.username,
+        repoName: ghIntegration.targetRepo,
+        syncedCount,
+        status: 'Connected',
+        message: `Connected to @${ghIntegration.username} (${syncedCount} unique solution${syncedCount === 1 ? '' : 's'} synced).`
+      };
+    }
+
+    // 5. Prepare real dashboard metrics
     const dashboardData = {
       success: true,
       student: {
@@ -96,12 +126,7 @@ router.get('/', protect, async (req, res, next) => {
           status: 'Not started',
           message: 'Explore core CS subjects (DBMS, OS, CN, OOP) to begin interview prep.'
         },
-        githubSync: {
-          isConnected: false,
-          repoName: null,
-          status: 'Not connected',
-          message: 'Connect your personal GitHub account to sync solutions.'
-        }
+        githubSync: githubSyncStats
       }
     };
 

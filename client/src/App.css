@@ -2627,3 +2627,65 @@
   border-color: #38bdf8;
 }
 
+/* GitHub Synchronization Badges in Workspace Console (Phase 8) */
+.submission-gh-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.gh-synced {
+  background-color: #064e3b;
+  color: #34d399;
+  border: 1px solid #059669;
+}
+
+.gh-synced a:hover {
+  text-decoration: underline !important;
+}
+
+.gh-pending {
+  background-color: #1e1b4b;
+  color: #a5b4fc;
+  border: 1px solid #4338ca;
+}
+
+.gh-failed {
+  background-color: #450a0a;
+  color: #f87171;
+  border: 1px solid #dc2626;
+}
+
+.gh-not-connected {
+  background-color: #1e293b;
+  color: #94a3b8;
+  border: 1px solid #475569;
+}
+
+.btn-sync-retry {
+  background: #334155;
+  border: 1px solid #64748b;
+  color: #f8fafc;
+  padding: 0.08rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sync-retry:hover:not(:disabled) {
+  background: #38bdf8;
+  color: #0f172a;
+  border-color: #38bdf8;
+}
+
+.btn-sync-retry:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

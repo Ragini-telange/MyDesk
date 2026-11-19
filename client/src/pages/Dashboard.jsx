@@ -227,17 +227,23 @@ function Dashboard() {
           </div>
           <div className="metric-body">
             <div className="progress-number">
-              <span className="current-val">0</span>
-              <span className="total-val">Synced Repositories</span>
+              <span className="current-val">{stats.githubSync?.syncedCount || 0}</span>
+              <span className="total-val">Unique Solutions Synced</span>
             </div>
             <div className="module-status-box">
-              <span className="status-pill status-empty">● {stats.githubSync.status}</span>
-              <p className="module-status-message">{stats.githubSync.message}</p>
+              <span
+                className={`status-pill ${
+                  stats.githubSync?.isConnected ? 'status-completed' : 'status-empty'
+                }`}
+              >
+                ● {stats.githubSync?.status || 'Not connected'}
+              </span>
+              <p className="module-status-message">{stats.githubSync?.message}</p>
             </div>
           </div>
           <div className="card-action">
             <Link to="/github" className="text-link">
-              Configure GitHub Sync →
+              {stats.githubSync?.isConnected ? 'Manage GitHub Sync →' : 'Configure GitHub Sync →'}
             </Link>
           </div>
         </div>

@@ -7,8 +7,10 @@ const router = express.Router();
 const path = require('path');
 const { protect } = require('../middleware/auth');
 const Submission = require('../models/Submission');
+const GitHubIntegration = require('../models/GitHubIntegration');
 const { adaptSourceCode } = require('../utils/driverAdapter');
 const { getTestCasesForProblem } = require('../data/dsaTestCases');
+const { syncSubmissionToGitHub } = require('../utils/githubSync');
 
 // OnlineCompiler.io Language ID Mapping (verified from https://api.onlinecompiler.io/api/judge0/languages)
 const LANGUAGE_ID_MAP = {
@@ -391,6 +393,67 @@ router.post('/submit', protect, async (req, res) => {
       failedTestCase
     });
 
+    // Automatic GitHub Synchronization for Accepted submissions (Phase 8)
+    let githubSyncResult = {
+      status: 'Not Connected',
+      commitUrl: '',
+      error: ''
+    };
+
+    if (finalStatus === 'Accepted') {
+      try {
+        const ghIntegration = await GitHubIntegration.findOne({
+          user: req.user._id,
+          isConnected: true
+        }).select('+encryptedAccessToken');
+
+        if (ghIntegration && ghIntegration.targetRepo) {
+          submission.githubSyncStatus = 'Pending';
+          await submission.save();
+
+          // Get all unique synced submissions for root README index (deduplicated by problem + language)
+          const allSolved = await Submission.getUniqueSyncedSubmissions(req.user._id);
+
+          const syncRes = await syncSubmissionToGitHub({
+            submission,
+            question,
+            githubIntegration: ghIntegration,
+            allSolvedSubmissions: allSolved,
+            dsaQuestions
+          });
+
+          submission.githubSyncStatus = 'Synced';
+          submission.githubCommitUrl = syncRes.commitUrl;
+          submission.githubSyncedAt = new Date();
+          submission.githubSyncError = '';
+          await submission.save();
+
+          ghIntegration.lastSyncedAt = new Date();
+          await ghIntegration.save();
+
+          githubSyncResult = {
+            status: 'Synced',
+            commitUrl: syncRes.commitUrl,
+            error: ''
+          };
+        } else {
+          submission.githubSyncStatus = 'Not Connected';
+          await submission.save();
+        }
+      } catch (ghErr) {
+        console.warn('GitHub automatic synchronization failed:', ghErr.message);
+        submission.githubSyncStatus = 'Failed';
+        submission.githubSyncError = ghErr.message || 'GitHub synchronization failed.';
+        await submission.save();
+
+        githubSyncResult = {
+          status: 'Failed',
+          commitUrl: '',
+          error: ghErr.message
+        };
+      }
+    }
+
     // Query distinct solved and attempted problem counts for the student
     const solvedIds = await Submission.distinct('questionId', {
       user: req.user._id,
@@ -414,6 +477,7 @@ router.post('/submit', protect, async (req, res) => {
         compileOutput: submission.compileOutput,
         errorMessage: submission.errorMessage,
         failedTestCase: submission.failedTestCase,
+        githubSync: githubSyncResult,
         createdAt: submission.createdAt,
         stats: {
           solvedCount: solvedIds.length,
@@ -489,7 +553,7 @@ router.get('/submissions/:problemId', protect, async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .limit(30)
-      .select('questionId language status runtime memory testCasesPassed totalTestCases code createdAt');
+      .select('questionId language status runtime memory testCasesPassed totalTestCases code createdAt githubSyncStatus githubCommitUrl githubSyncedAt githubSyncError');
 
     return res.json({
       success: true,

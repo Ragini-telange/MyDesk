@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const taskRoutes = require('./routes/tasks');
 const dsaRoutes = require('./routes/dsa');
+const githubRoutes = require('./routes/github');
 
 // Load environment variables from .env file (always relative to server folder)
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -52,6 +53,9 @@ app.use('/api/tasks', taskRoutes);
 
 // Mount DSA code execution routes (Phase 7.3)
 app.use('/api/dsa', dsaRoutes);
+
+// Mount GitHub synchronization routes (Phase 8)
+app.use('/api/github', githubRoutes);
 
 // Root welcome route
 app.get('/', (req, res) => {
