@@ -434,9 +434,9 @@ function GitHubIntegration() {
           </div>
 
           {isCreatingRepo && (
-            <form onSubmit={handleCreateRepo} style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', border: '1px solid #e2e8f0' }}>
+            <form onSubmit={handleCreateRepo} style={{ background: 'var(--border-light)', padding: '1rem', borderRadius: '8px', marginBottom: '1.25rem', border: '1px solid var(--border-color)' }}>
               <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '0.95rem' }}>Create New Repository on GitHub</h4>
-              <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: '#64748b' }}>
+              <p style={{ margin: '0 0 0.75rem 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 MyDesk will initialize this repository with a root README explaining your placement practice journey.
               </p>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -445,7 +445,7 @@ function GitHubIntegration() {
                   value={newRepoName}
                   onChange={(e) => setNewRepoName(e.target.value)}
                   placeholder="e.g. MyDesk-DSA-Solutions"
-                  style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', flex: 1, minWidth: '220px' }}
+                  style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', color: 'var(--text-main)', flex: 1, minWidth: '220px' }}
                 />
                 <button type="submit" disabled={isSubmitting} className="btn btn-primary btn-sm">
                   {isSubmitting ? 'Creating...' : 'Create & Select'}
@@ -551,13 +551,13 @@ function GitHubIntegration() {
               <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#f59e0b' }}>{githubData.unSyncedCount}</div>
             </div>
             <div className="dashboard-card metric-card" style={{ padding: '1rem' }}>
-              <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Target Repository</div>
-              <div style={{ fontSize: '1rem', fontWeight: 700, color: '#1e293b', marginTop: '0.4rem', wordBreak: 'break-all' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Target Repository</div>
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-main)', marginTop: '0.4rem', wordBreak: 'break-all' }}>
                 <a
                   href={`https://github.com/${githubData.username}/${githubData.targetRepo}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: '#2563eb', textDecoration: 'none' }}
+                  style={{ color: 'var(--primary)', textDecoration: 'none' }}
                 >
                   {githubData.targetRepo} ↗
                 </a>

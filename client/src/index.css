@@ -1,5 +1,12 @@
 /* index.css - Global resets and theme variables */
-:root {
+
+/* ==========================================================================
+   THEME VARIABLES
+   ========================================================================== */
+
+/* Light Mode (Default) */
+:root,
+[data-theme="light"] {
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-light: #eff6ff;
@@ -8,6 +15,8 @@
   --bg-page: #f8fafc;
   --bg-card: #ffffff;
   --bg-sidebar: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #f1f5f9;
 
   --text-main: #0f172a;
   --text-muted: #64748b;
@@ -38,6 +47,47 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
+/* Dark Mode */
+[data-theme="dark"] {
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(59, 130, 246, 0.15);
+  --primary-border: rgba(59, 130, 246, 0.35);
+
+  --bg-page: #0f172a;       /* Rich dark background */
+  --bg-card: #1e293b;       /* Dark card / section background */
+  --bg-sidebar: #1e293b;    /* Dark sidebar */
+  --bg-input: #0f172a;      /* Dark input background */
+  --bg-hover: #334155;      /* Dark hover background */
+
+  --text-main: #f8fafc;     /* Clean, readable light text */
+  --text-muted: #94a3b8;    /* Comfortable secondary text */
+  --text-light: #64748b;    /* Muted label text */
+
+  --border-color: #334155;  /* Subtle dark borders */
+  --border-light: #162032;  /* Slightly darker secondary background */
+
+  --success: #10b981;
+  --success-bg: rgba(16, 185, 129, 0.18);
+  --success-text: #34d399;
+
+  --warning: #f59e0b;
+  --warning-bg: rgba(245, 158, 11, 0.18);
+  --warning-text: #fbbf24;
+
+  --danger: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.18);
+  --danger-text: #f87171;
+
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================================================
+   GLOBAL RESETS
+   ========================================================================== */
+
 * {
   margin: 0;
   padding: 0;
@@ -50,6 +100,7 @@ body {
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 a {
@@ -67,4 +118,7 @@ textarea,
 select {
   font-family: inherit;
   font-size: 0.95rem;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border-color: var(--border-color);
 }

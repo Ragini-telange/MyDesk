@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyDesk</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+
+<body>
+
+  <!-- ============================================================
+       HEADER — always visible
+  ============================================================ -->
+  <header class="header">
+    <div class="header-logo">
+      <span class="logo-icon">🎯</span>
+      <span class="logo-text">MyDesk</span>
+    </div>
+    <p class="header-tagline">Student Productivity Hub</p>
+  </header>
+
+  <!-- ============================================================
+       LOADING SCREEN — shown while checking stored credentials
+  ============================================================ -->
+  <div id="loading-view" class="view">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading…</p>
+  </div>
+
+  <!-- ============================================================
+       LOGIN FORM — shown when no valid token is stored
+  ============================================================ -->
+  <div id="login-view" class="view hidden">
+    <div class="login-card">
+      <h2 class="login-title">Sign In to MyDesk</h2>
+      <p class="login-subtitle">Use your MyDesk account credentials.</p>
+
+      <!-- Error message box -->
+      <div id="login-error" class="error-box hidden"></div>
+
+      <label class="input-label" for="email-input">Email</label>
+      <input id="email-input" class="input-field" type="email" placeholder="student@example.com" autocomplete="email" />
+
+      <label class="input-label" for="password-input">Password</label>
+      <input id="password-input" class="input-field" type="password" placeholder="Your password"
+        autocomplete="current-password" />
+
+      <button id="login-btn" class="btn btn-primary">Sign In</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       DASHBOARD — shown when logged in
+  ============================================================ -->
+  <div id="dashboard-view" class="view hidden">
+
+    <!-- Student info + logout -->
+    <div class="user-bar">
+      <div class="user-info">
+        <span class="user-avatar">👤</span>
+        <div>
+          <p id="user-name" class="user-name">Student</p>
+          <p id="user-email" class="user-email">—</p>
+        </div>
+      </div>
+      <button id="logout-btn" class="btn btn-ghost">Logout</button>
+    </div>
+
+    <!-- ---- Progress Cards ---- -->
+    <section class="section">
+      <h3 class="section-title">📊 Your Progress</h3>
+
+      <div class="cards-grid">
+
+        <!-- Tasks card -->
+        <div class="card">
+          <div class="card-icon">✅</div>
+          <div class="card-body">
+            <p class="card-label">Tasks Done</p>
+            <p class="card-value">
+              <span id="tasks-completed">—</span>
+              <span class="card-total"> / <span id="tasks-total">—</span></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- DSA card -->
+        <div class="card">
+          <div class="card-icon">💻</div>
+          <div class="card-body">
+            <p class="card-label">DSA Solved</p>
+            <p class="card-value">
+              <span id="dsa-solved">—</span>
+              <span class="card-total"> / 100</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- GitHub Sync card -->
+        <div class="card card-full">
+          <div class="card-icon">🔗</div>
+          <div class="card-body">
+            <p class="card-label">GitHub Synced</p>
+            <p id="github-status" class="card-value card-value-sm">—</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ---- Quick Links ---- -->
+    <section class="section">
+      <h3 class="section-title">🚀 Quick Links</h3>
+
+      <div class="links-list">
+        <button class="link-btn" data-path="/dashboard">
+          <span class="link-icon">🏠</span> Dashboard
+        </button>
+        <button class="link-btn" data-path="/todo">
+          <span class="link-icon">📝</span> To-Do List
+        </button>
+        <button class="link-btn" data-path="/dsa">
+          <span class="link-icon">🧩</span> DSA Practice
+        </button>
+        <button class="link-btn" data-path="/interview">
+          <span class="link-icon">🎤</span> Interview Prep
+        </button>
+      </div>
+    </section>
+
+    <!-- Open MyDesk full website -->
+    <button id="open-mydesk-btn" class="btn btn-primary btn-full">
+      🌐 Open MyDesk
+    </button>
+
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

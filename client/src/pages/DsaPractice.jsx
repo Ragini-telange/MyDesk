@@ -11,6 +11,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { DSA_QUESTIONS, DSA_TOPICS, DSA_DIFFICULTIES } from '../data/dsaQuestions';
 
 const PAGE_SIZE = 15;
@@ -54,12 +55,18 @@ function DsaPractice() {
   const [modalCopied, setModalCopied] = useState(false);
 
   // Workspace editor states (Phase 7.2, 7.3 & 7.4)
+  const { theme } = useTheme();
   const [selectedLang, setSelectedLang] = useState('cpp');
-  const [editorTheme, setEditorTheme] = useState('vs-dark');
+  const [editorTheme, setEditorTheme] = useState(() => (theme === 'dark' ? 'vs-dark' : 'light'));
   const [fontSize, setFontSize] = useState(14);
   const [problemCodes, setProblemCodes] = useState({});
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Synchronize Monaco editor theme with website theme whenever website theme toggles
+  useEffect(() => {
+    setEditorTheme(theme === 'dark' ? 'vs-dark' : 'light');
+  }, [theme]);
 
   // Workspace console and submissions history states
   const [activeConsoleTab, setActiveConsoleTab] = useState('output'); // 'output' | 'history'

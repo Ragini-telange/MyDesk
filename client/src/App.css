@@ -101,7 +101,7 @@
    2. NAVBAR
 ---------------------------------- */
 .navbar {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
@@ -174,6 +174,27 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background-color: var(--border-light);
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 /* ---------------------------------
@@ -318,7 +339,7 @@
 }
 
 .header-badge {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 0.4rem 0.8rem;
   border-radius: var(--radius-full);
@@ -357,7 +378,7 @@
 }
 
 .hero-banner {
-  background: linear-gradient(180deg, #ffffff 0%, var(--bg-page) 100%);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-page) 100%);
   padding: 4.5rem 1.5rem 3.5rem 1.5rem;
   text-align: center;
   border-bottom: 1px solid var(--border-color);
@@ -372,7 +393,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 0.35rem 0.9rem;
   border-radius: var(--radius-full);
@@ -439,7 +460,7 @@
 }
 
 .feature-box {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.75rem;
@@ -503,7 +524,7 @@
 .auth-card {
   width: 100%;
   max-width: 440px;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 2.25rem;
@@ -594,7 +615,7 @@
    7. DASHBOARD COMPONENTS
 ---------------------------------- */
 .profile-banner-card {
-  background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-card) 100%);
   border-color: var(--primary-border);
 }
 
@@ -608,7 +629,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 2px solid var(--primary-border);
   display: flex;
   align-items: center;
@@ -637,7 +658,7 @@
 }
 
 .tag {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-sm);
@@ -834,12 +855,13 @@
 }
 
 .badge-stat {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
   font-weight: 600;
+  color: var(--text-main);
 }
 
 .badge-stat.pending {
@@ -872,7 +894,8 @@
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
+  color: var(--text-main);
 }
 
 .tasks-container {
@@ -888,7 +911,7 @@
   padding: 0.9rem 1rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   transition: all 0.2s;
 }
 
@@ -1026,7 +1049,7 @@
 }
 
 .pill-btn {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 0.35rem 0.8rem;
   border-radius: var(--radius-full);
@@ -1078,7 +1101,7 @@
 }
 
 .questions-table tr:hover {
-  background-color: #f8fafc;
+  background-color: var(--border-light);
 }
 
 .col-id {
@@ -1139,7 +1162,7 @@
 }
 
 .modal-dialog {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 650px;
@@ -1269,7 +1292,7 @@
 .accordion-header {
   width: 100%;
   text-align: left;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: none;
   padding: 1rem 1.25rem;
   display: flex;
@@ -1302,14 +1325,14 @@
 
 .accordion-body {
   padding: 1.25rem;
-  background-color: #f8fafc;
+  background-color: var(--border-light);
   border-top: 1px solid var(--border-color);
 }
 
 .answer-text {
   font-family: inherit;
   font-size: 0.92rem;
-  color: #334155;
+  color: var(--text-main);
   white-space: pre-wrap;
   line-height: 1.6;
 }
@@ -1420,7 +1443,7 @@
 .footer {
   padding: 1.75rem;
   text-align: center;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
   font-size: 0.88rem;
@@ -1534,7 +1557,8 @@
   font-size: 0.95rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
+  color: var(--text-main);
   outline: none;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
@@ -1644,7 +1668,7 @@
 }
 
 .dsa-stat-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1rem 1.25rem;
@@ -1739,7 +1763,7 @@
   border-top: 1px solid var(--border-color);
   flex-wrap: wrap;
   gap: 1rem;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
 }
 
 .dsa-pagination-info {
@@ -1755,7 +1779,7 @@
 }
 
 .page-nav-btn {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0.4rem 0.75rem;
@@ -1790,7 +1814,7 @@
   justify-content: center;
   padding: 0 0.35rem;
   border: 1px solid var(--border-color);
-  background: #ffffff;
+  background: var(--bg-card);
   color: var(--text-main);
   border-radius: var(--radius-sm);
   font-size: 0.82rem;
@@ -2010,7 +2034,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 0.85rem 1.25rem;
@@ -2027,7 +2051,7 @@
 }
 
 .btn-back-catalog {
-  background: var(--border-light);
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0.45rem 0.85rem;
@@ -2039,7 +2063,7 @@
 }
 
 .btn-back-catalog:hover {
-  background: #e2e8f0;
+  background: var(--border-light);
 }
 
 .workspace-problem-headline {
@@ -2072,7 +2096,7 @@
 }
 
 .btn-problem-step {
-  background: #ffffff;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0.4rem 0.75rem;
@@ -2109,7 +2133,7 @@
 
 /* Left Panel */
 .workspace-left-panel {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -2140,7 +2164,7 @@
 
 /* Right Panel */
 .workspace-right-panel {
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -2151,7 +2175,7 @@
 
 /* Editor Toolbar */
 .editor-controls-toolbar {
-  background-color: #f8fafc;
+  background-color: var(--border-light);
   border-bottom: 1px solid var(--border-color);
   padding: 0.65rem 1rem;
   display: flex;
@@ -2179,7 +2203,7 @@
 
 .editor-select {
   border: 1px solid var(--border-color);
-  background-color: #ffffff;
+  background-color: var(--bg-card);
   border-radius: var(--radius-sm);
   padding: 0.3rem 0.55rem;
   font-size: 0.82rem;
@@ -2234,7 +2258,7 @@
 
 /* Action Bar */
 .editor-action-bar {
-  background-color: #f8fafc;
+  background-color: var(--border-light);
   border-bottom: 1px solid var(--border-color);
   padding: 0.65rem 1rem;
   display: flex;
@@ -2492,6 +2516,24 @@
   background-color: #f1f5f9;
   color: #64748b;
   border: 1px solid #e2e8f0;
+}
+
+[data-theme="dark"] .badge-solved {
+  background-color: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+[data-theme="dark"] .badge-attempted {
+  background-color: rgba(217, 119, 6, 0.2);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+[data-theme="dark"] .badge-todo {
+  background-color: rgba(148, 163, 184, 0.15);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.25);
 }
 
 /* Console Header Navigation Tabs */
