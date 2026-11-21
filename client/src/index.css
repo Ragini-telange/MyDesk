@@ -1,87 +1,94 @@
 /* index.css - Global resets and theme variables */
 
 /* ==========================================================================
-   THEME VARIABLES
+   APPROVED THEME VARIABLES (TEAL & NAVY SAAS DESIGN SYSTEM)
    ========================================================================== */
 
 /* Light Mode (Default) */
 :root,
 [data-theme="light"] {
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-light: #eff6ff;
-  --primary-border: #bfdbfe;
+  --primary: #087E8B;
+  --primary-hover: #066772;
+  --primary-light: #EBF7F8;
+  --primary-border: #C8EAEF;
+  --secondary-teal: #55B8C1;
 
-  --bg-page: #f8fafc;
-  --bg-card: #ffffff;
-  --bg-sidebar: #ffffff;
-  --bg-input: #ffffff;
-  --bg-hover: #f1f5f9;
+  --bg-page: #F7F9FA;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --bg-input: #FFFFFF;
+  --bg-hover: #F0F4F7;
+  --bg-banner: linear-gradient(135deg, #E6F6F7 0%, #D4EFF2 100%);
+  --bg-banner-accent: #C2EAEF;
 
-  --text-main: #0f172a;
-  --text-muted: #64748b;
-  --text-light: #94a3b8;
+  --text-main: #172B3A;
+  --text-muted: #64748B;
+  --text-light: #8FA0AF;
 
-  --border-color: #e2e8f0;
-  --border-light: #f1f5f9;
+  --border-color: #E3E9ED;
+  --border-light: #EEF2F5;
 
-  --success: #10b981;
-  --success-bg: #ecfdf5;
-  --success-text: #065f46;
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --success-text: #065F46;
 
-  --warning: #f59e0b;
-  --warning-bg: #fffbeb;
-  --warning-text: #92400e;
+  --warning: #F59E0B;
+  --warning-bg: #FFFBEB;
+  --warning-text: #92400E;
 
-  --danger: #ef4444;
-  --danger-bg: #fef2f2;
-  --danger-text: #991b1b;
+  --danger: #EF4444;
+  --danger-bg: #FEF2F2;
+  --danger-text: #991B1B;
 
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 3px rgba(23, 43, 58, 0.04);
+  --shadow-md: 0 4px 14px rgba(23, 43, 58, 0.06);
+  --shadow-lg: 0 10px 28px -4px rgba(23, 43, 58, 0.08);
 }
 
 /* Dark Mode */
 [data-theme="dark"] {
-  --primary: #3b82f6;
-  --primary-hover: #60a5fa;
-  --primary-light: rgba(59, 130, 246, 0.15);
-  --primary-border: rgba(59, 130, 246, 0.35);
+  --primary: #1DB4C4;
+  --primary-hover: #38C6D5;
+  --primary-light: rgba(29, 180, 196, 0.14);
+  --primary-border: rgba(29, 180, 196, 0.32);
+  --secondary-teal: #55B8C1;
 
-  --bg-page: #0f172a;       /* Rich dark background */
-  --bg-card: #1e293b;       /* Dark card / section background */
-  --bg-sidebar: #1e293b;    /* Dark sidebar */
-  --bg-input: #0f172a;      /* Dark input background */
-  --bg-hover: #334155;      /* Dark hover background */
+  --bg-page: #0B151E;       /* Deep charcoal-navy background */
+  --bg-card: #13202D;       /* Elevated dark card */
+  --bg-sidebar: #13202D;    /* Dark sidebar */
+  --bg-input: #0E1823;      /* Dark input background */
+  --bg-hover: #1A2C3D;      /* Dark hover */
+  --bg-banner: linear-gradient(135deg, #132838 0%, #173245 100%);
+  --bg-banner-accent: #1C3C54;
 
-  --text-main: #f8fafc;     /* Clean, readable light text */
-  --text-muted: #94a3b8;    /* Comfortable secondary text */
-  --text-light: #64748b;    /* Muted label text */
+  --text-main: #F1F5F9;     /* Crisp light text */
+  --text-muted: #8FA0AF;    /* Secondary text */
+  --text-light: #64748B;    /* Subtle muted text */
 
-  --border-color: #334155;  /* Subtle dark borders */
-  --border-light: #162032;  /* Slightly darker secondary background */
+  --border-color: #1F3549;  /* Clean dark borders */
+  --border-light: #162636;  /* Subtle divider lines */
 
-  --success: #10b981;
-  --success-bg: rgba(16, 185, 129, 0.18);
-  --success-text: #34d399;
+  --success: #10B981;
+  --success-bg: rgba(16, 185, 129, 0.16);
+  --success-text: #34D399;
 
-  --warning: #f59e0b;
-  --warning-bg: rgba(245, 158, 11, 0.18);
-  --warning-text: #fbbf24;
+  --warning: #F59E0B;
+  --warning-bg: rgba(245, 158, 11, 0.16);
+  --warning-text: #FBBF24;
 
-  --danger: #ef4444;
-  --danger-bg: rgba(239, 68, 68, 0.18);
-  --danger-text: #f87171;
+  --danger: #EF4444;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --danger-text: #F87171;
 
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.55);
 }
 
 /* ==========================================================================
@@ -95,12 +102,14 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', Helvetica, Arial, sans-serif;
   background-color: var(--bg-page);
   color: var(--text-main);
-  line-height: 1.6;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.2s ease, color 0.2s ease;
+  min-height: 100vh;
 }
 
 a {
@@ -111,14 +120,45 @@ a {
 button {
   font-family: inherit;
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 input,
 textarea,
 select {
   font-family: inherit;
-  font-size: 0.95rem;
-  background-color: var(--bg-card);
+  font-size: 0.92rem;
+  background-color: var(--bg-input);
   color: var(--text-main);
-  border-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-light);
 }

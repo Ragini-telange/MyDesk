@@ -1,6 +1,7 @@
 /* =============================================================
    popup.css — MyDesk Chrome Extension Styles
-   Clean white background, teal accent (#0d9488), 320 px wide popup
+   Clean Professional Teal & White SaaS Design System (#087E8B)
+   320px wide popup
 ============================================================= */
 
 /* ---------- Reset & Base ---------- */
@@ -13,10 +14,10 @@
 body {
   width: 320px;
   min-height: 120px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   font-size: 13px;
-  color: #1e293b;
-  background: #ffffff;
+  color: #172B3A;
+  background: #F7F9FA;
   overflow-x: hidden;
 }
 
@@ -27,9 +28,9 @@ body {
 
 /* ---------- Header ---------- */
 .header {
-  background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-  padding: 14px 16px 10px;
-  color: #ffffff;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E3E9ED;
+  padding: 12px 16px 10px;
 }
 
 .header-logo {
@@ -38,23 +39,24 @@ body {
   gap: 8px;
 }
 
-.logo-icon {
-  font-size: 22px;
-  line-height: 1;
+.brand-svg-mark {
+  flex-shrink: 0;
 }
 
 .logo-text {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
+  color: #087E8B;
   letter-spacing: -0.3px;
 }
 
 .header-tagline {
-  font-size: 11px;
-  color: #ccfbf1;
-  margin-top: 2px;
-  margin-left: 30px;
-  letter-spacing: 0.2px;
+  font-size: 10px;
+  color: #64748B;
+  margin-top: 1px;
+  margin-left: 32px;
+  letter-spacing: 0.3px;
+  font-style: italic;
 }
 
 /* ---------- Views ---------- */
@@ -66,8 +68,8 @@ body {
 .loading-spinner {
   width: 28px;
   height: 28px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #0d9488;
+  border: 3px solid #E3E9ED;
+  border-top-color: #087E8B;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
   margin: 20px auto 10px;
@@ -79,7 +81,7 @@ body {
 
 .loading-text {
   text-align: center;
-  color: #64748b;
+  color: #64748B;
   font-size: 12px;
   padding-bottom: 10px;
 }
@@ -89,24 +91,33 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E3E9ED;
+  border-radius: 12px;
+  padding: 16px 14px;
+  box-shadow: 0 1px 3px rgba(23, 43, 58, 0.04);
+}
+
+.login-header-mini {
+  margin-bottom: 4px;
 }
 
 .login-title {
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: #172B3A;
 }
 
 .login-subtitle {
   font-size: 11px;
-  color: #64748b;
-  margin-bottom: 4px;
+  color: #64748B;
+  margin-top: 2px;
 }
 
 .error-box {
-  background: #fef2f2;
-  border: 1px solid #fca5a5;
-  color: #b91c1c;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #991B1B;
   font-size: 11px;
   padding: 7px 10px;
   border-radius: 6px;
@@ -116,24 +127,26 @@ body {
 .input-label {
   font-size: 11px;
   font-weight: 600;
-  color: #374151;
-  margin-top: 2px;
+  color: #172B3A;
+  margin-top: 4px;
 }
 
 .input-field {
   width: 100%;
   padding: 8px 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #E3E9ED;
   border-radius: 7px;
   font-size: 12px;
-  color: #1e293b;
+  color: #172B3A;
+  background: #F7F9FA;
   outline: none;
-  transition: border-color 0.15s;
+  transition: all 0.15s;
 }
 
 .input-field:focus {
-  border-color: #0d9488;
-  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+  border-color: #087E8B;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 2px rgba(8, 126, 139, 0.15);
 }
 
 /* ---------- Buttons ---------- */
@@ -145,10 +158,10 @@ body {
   font-size: 12px;
   font-weight: 600;
   border: none;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   padding: 8px 14px;
-  transition: background 0.15s, opacity 0.15s;
+  transition: all 0.15s ease;
 }
 
 .btn:disabled {
@@ -157,33 +170,36 @@ body {
 }
 
 .btn-primary {
-  background: #0d9488;
-  color: #ffffff;
-  margin-top: 4px;
+  background: #087E8B;
+  color: #FFFFFF;
+  margin-top: 6px;
+  box-shadow: 0 2px 6px rgba(8, 126, 139, 0.2);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #0f766e;
+  background: #066772;
 }
 
 .btn-ghost {
   background: transparent;
-  color: #64748b;
-  border: 1px solid #e2e8f0;
-  padding: 5px 10px;
+  color: #64748B;
+  border: 1px solid #E3E9ED;
+  padding: 4px 8px;
   font-size: 11px;
+  border-radius: 6px;
 }
 
 .btn-ghost:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: #F0F4F7;
+  color: #172B3A;
+  border-color: #CBD5E1;
 }
 
 .btn-full {
   width: 100%;
-  margin-top: 4px;
-  padding: 10px;
-  font-size: 13px;
+  margin-top: 6px;
+  padding: 9px;
+  font-size: 12px;
 }
 
 /* ---------- User Bar ---------- */
@@ -192,8 +208,10 @@ body {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 8px 10px;
+  background: #FFFFFF;
+  border: 1px solid #E3E9ED;
+  border-radius: 10px;
 }
 
 .user-info {
@@ -202,16 +220,27 @@ body {
   gap: 8px;
 }
 
-.user-avatar {
-  font-size: 20px;
-  line-height: 1;
+.user-avatar-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E6F7F8;
+  color: #087E8B;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-meta {
+  display: flex;
+  flex-direction: column;
 }
 
 .user-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: #0f172a;
-  max-width: 160px;
+  color: #172B3A;
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -219,8 +248,8 @@ body {
 
 .user-email {
   font-size: 10px;
-  color: #94a3b8;
-  max-width: 160px;
+  color: #64748B;
+  max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -228,16 +257,22 @@ body {
 
 /* ---------- Sections ---------- */
 .section {
-  margin-bottom: 14px;
+  margin-bottom: 12px;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
 }
 
 .section-title {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: #64748b;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  color: #64748B;
 }
 
 /* ---------- Progress Cards ---------- */
@@ -251,49 +286,72 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: #FFFFFF;
+  border: 1px solid #E3E9ED;
   border-radius: 9px;
-  padding: 9px 10px;
+  padding: 8px 10px;
+  box-shadow: 0 1px 2px rgba(23, 43, 58, 0.02);
 }
 
-/* Full-width card (GitHub) */
 .card-full {
   grid-column: 1 / -1;
 }
 
 .card-icon {
-  font-size: 18px;
-  line-height: 1;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
+.icon-teal {
+  background: #E6F7F8;
+  color: #087E8B;
+}
+
+.icon-purple {
+  background: #F3E8FF;
+  color: #7C3AED;
+}
+
+.icon-navy {
+  background: #E2E8F0;
+  color: #1E293B;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
 .card-label {
-  font-size: 10px;
-  color: #64748b;
+  font-size: 9px;
+  color: #64748B;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  margin-bottom: 2px;
 }
 
 .card-value {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 800;
-  color: #0d9488;
-  line-height: 1;
+  color: #172B3A;
+  line-height: 1.2;
 }
 
 .card-value-sm {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  line-height: 1.4;
+  color: #087E8B;
 }
 
 .card-total {
   font-size: 11px;
   font-weight: 500;
-  color: #94a3b8;
+  color: #64748B;
 }
 
 /* ---------- Quick Links ---------- */
@@ -306,26 +364,44 @@ body {
 .link-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   width: 100%;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 7px;
-  padding: 8px 12px;
+  background: #FFFFFF;
+  border: 1px solid #E3E9ED;
+  border-radius: 8px;
+  padding: 7px 11px;
   font-size: 12px;
-  font-weight: 500;
-  color: #1e293b;
+  font-weight: 600;
+  color: #172B3A;
   cursor: pointer;
   text-align: left;
-  transition: background 0.12s, border-color 0.12s;
+  transition: all 0.15s ease;
 }
 
 .link-btn:hover {
-  background: #f0fdfa;
-  border-color: #0d9488;
-  color: #0f766e;
+  background: #E6F7F8;
+  border-color: #C8EAEF;
+  color: #087E8B;
 }
 
 .link-icon {
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  color: #087E8B;
+  flex-shrink: 0;
+}
+
+.link-text {
+  flex: 1;
+}
+
+.link-arrow {
+  color: #64748B;
+  font-size: 11px;
+  transition: transform 0.15s;
+}
+
+.link-btn:hover .link-arrow {
+  transform: translateX(2px);
+  color: #087E8B;
 }

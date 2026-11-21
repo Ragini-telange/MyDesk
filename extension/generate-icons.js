@@ -1,5 +1,6 @@
 // generate-icons.js
 // Utility script to generate valid 16x16, 48x48, 128x128 PNG icons for the MyDesk extension.
+// Matches the approved primary teal color #087E8B (r=8, g=126, b=139).
 // Run with: node generate-icons.js
 
 const fs = require('fs');
@@ -68,8 +69,9 @@ if (!fs.existsSync(outDir)) {
   fs.mkdirSync(outDir, { recursive: true });
 }
 
+// Generate icons with primary teal #087E8B: r: 8, g: 126, b: 139
 [16, 48, 128].forEach(size => {
-  const png = createPng(size, size, 13, 148, 136); // Teal #0d9488
+  const png = createPng(size, size, 8, 126, 139);
   fs.writeFileSync(path.join(outDir, `icon${size}.png`), png);
-  console.log(`✅ Generated ${size}x${size} PNG icon`);
+  console.log(`✅ Generated ${size}x${size} PNG icon in #087E8B teal`);
 });

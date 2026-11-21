@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import MyDeskLogo from '../components/MyDeskLogo';
 import { useAuth } from '../context/AuthContext';
 
 function Login() {
@@ -85,7 +86,9 @@ function Login() {
       <main className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <span className="auth-icon">🔐</span>
+            <div style={{ display: 'inline-flex', marginBottom: '0.75rem' }}>
+              <MyDeskLogo size={42} />
+            </div>
             <h2 className="auth-title">Welcome Back</h2>
             <p className="auth-subtitle">Sign in to your MyDesk student workspace</p>
           </div>

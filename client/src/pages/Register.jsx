@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import MyDeskLogo from '../components/MyDeskLogo';
 import { useAuth } from '../context/AuthContext';
 
 function Register() {
@@ -96,7 +97,9 @@ function Register() {
       <main className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <span className="auth-icon">📝</span>
+            <div style={{ display: 'inline-flex', marginBottom: '0.75rem' }}>
+              <MyDeskLogo size={42} />
+            </div>
             <h2 className="auth-title">Create Account</h2>
             <p className="auth-subtitle">Join MyDesk to start your placement preparation</p>
           </div>
