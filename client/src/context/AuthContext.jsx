@@ -2,6 +2,7 @@
 // React Context providing global authentication state (user, token, login, logout) across the app.
 
 import { createContext, useContext, useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext(null);
 
@@ -19,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       if (storedToken && storedUser) {
         try {
           // Verify with backend /api/auth/me to confirm token is still valid
-          const response = await fetch('http://localhost:5000/api/auth/me', {
+          const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             }

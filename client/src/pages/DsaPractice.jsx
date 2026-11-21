@@ -13,6 +13,7 @@ import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { DSA_QUESTIONS, DSA_TOPICS, DSA_DIFFICULTIES } from '../data/dsaQuestions';
+import { API_BASE_URL } from '../config/api';
 
 const PAGE_SIZE = 15;
 
@@ -85,7 +86,7 @@ function DsaPractice() {
     try {
       const authToken = token || localStorage.getItem('mydesk_token');
       if (!authToken) return;
-      const res = await fetch('http://localhost:5000/api/dsa/progress', {
+      const res = await fetch(`${API_BASE_URL}/api/dsa/progress`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       if (res.ok) {
@@ -106,7 +107,7 @@ function DsaPractice() {
     try {
       const authToken = token || localStorage.getItem('mydesk_token');
       if (!authToken) return;
-      const res = await fetch(`http://localhost:5000/api/dsa/submissions/${problemId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/dsa/submissions/${problemId}`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
       if (res.ok) {
@@ -218,7 +219,7 @@ function DsaPractice() {
     try {
       setRetryingSyncId(submissionId);
       const authToken = token || localStorage.getItem('mydesk_token');
-      const res = await fetch(`http://localhost:5000/api/github/sync/${submissionId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/github/sync/${submissionId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -268,7 +269,7 @@ function DsaPractice() {
 
     try {
       const authToken = token || localStorage.getItem('mydesk_token');
-      const response = await fetch('http://localhost:5000/api/dsa/run', {
+      const response = await fetch(`${API_BASE_URL}/api/dsa/run`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -361,7 +362,7 @@ function DsaPractice() {
         type: 'error',
         badge: 'Connection Error',
         timestamp: new Date().toLocaleTimeString(),
-        content: `[BACKEND CONNECTION ERROR]\nCould not connect to MyDesk backend at http://localhost:5000/api/dsa/run.\nError: ${err.message}\n\nPlease verify that the backend server is running.`
+        content: `[BACKEND CONNECTION ERROR]\nCould not connect to MyDesk backend at ${API_BASE_URL}/api/dsa/run.\nError: ${err.message}\n\nPlease verify that the backend server is running.`
       });
     } finally {
       setIsRunning(false);
@@ -397,7 +398,7 @@ function DsaPractice() {
 
     try {
       const authToken = token || localStorage.getItem('mydesk_token');
-      const response = await fetch('http://localhost:5000/api/dsa/submit', {
+      const response = await fetch(`${API_BASE_URL}/api/dsa/submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -500,7 +501,7 @@ function DsaPractice() {
         type: 'error',
         badge: 'Connection Error',
         timestamp: new Date().toLocaleTimeString(),
-        content: `[BACKEND CONNECTION ERROR]\nCould not connect to MyDesk backend at http://localhost:5000/api/dsa/submit.\nError: ${err.message}`
+        content: `[BACKEND CONNECTION ERROR]\nCould not connect to MyDesk backend at ${API_BASE_URL}/api/dsa/submit.\nError: ${err.message}`
       });
     } finally {
       setIsSubmitting(false);

@@ -1,9 +1,16 @@
 // server.js
 // Main entry point for the MyDesk backend API server.
 
-// Fix for Node.js DNS resolution issue with MongoDB Atlas SRV records on Windows
-const dns = require('node:dns');
-dns.setServers(['8.8.8.8', '1.1.1.1']);
+// Fix for Node.js DNS resolution issue with MongoDB Atlas SRV records on Windows local development
+// Windows-only: Do not force public DNS servers on Render Linux containers
+if (process.platform === 'win32' && process.env.NODE_ENV !== 'production') {
+  try {
+    const dns = require('node:dns');
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+  } catch (err) {
+    // Ignore DNS override errors
+  }
+}
 
 const express = require('express');
 const cors = require('cors');
@@ -32,8 +39,46 @@ connectDB();
 // MIDDLEWARE
 // ----------------------
 
-// Enable Cross-Origin Resource Sharing (CORS) so our React frontend can talk to this server
-app.use(cors());
+// Configure CORS: Allow deployed frontend (CLIENT_URL), local development, and Chrome extension
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+];
+
+if (process.env.CLIENT_URL) {
+  process.env.CLIENT_URL.split(',').forEach((url) => {
+    const trimmed = url.trim().replace(/\/+$/, '');
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed);
+    }
+  });
+}
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, curl, Render health checks)
+    if (!origin) return callback(null, true);
+
+    // Allow configured origins, local development, or Chrome extensions
+    if (
+      allowedOrigins.includes(origin) ||
+      origin.startsWith('chrome-extension://') ||
+      process.env.NODE_ENV !== 'production'
+    ) {
+      return callback(null, true);
+    }
+
+    // Allow Vercel preview URLs
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS policy blocked access from origin: ${origin}`));
+  },
+  credentials: true
+}));
 
 // Parse incoming JSON payloads in request bodies
 app.use(express.json());

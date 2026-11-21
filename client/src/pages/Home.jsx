@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { API_BASE_URL } from '../config/api';
 
 function Home() {
   const [backendStatus, setBackendStatus] = useState('Checking backend...');
@@ -11,7 +12,7 @@ function Home() {
 
   // Preserve Phase 1 check: probe backend health
   useEffect(() => {
-    fetch('http://localhost:5000/api/health')
+    fetch(`${API_BASE_URL}/api/health`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

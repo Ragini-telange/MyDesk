@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 function GitHubIntegration() {
   const { token } = useAuth();
@@ -48,7 +49,7 @@ function GitHubIntegration() {
   const fetchGitHubStatus = async () => {
     try {
       setLoading(true);
-      const res = await fetch('http://localhost:5000/api/github/status', {
+      const res = await fetch(`${API_BASE_URL}/api/github/status`, {
         headers: getAuthHeaders()
       });
 
@@ -89,7 +90,7 @@ function GitHubIntegration() {
   const fetchRepositories = async () => {
     try {
       setLoadingRepos(true);
-      const res = await fetch('http://localhost:5000/api/github/repos', {
+      const res = await fetch(`${API_BASE_URL}/api/github/repos`, {
         headers: getAuthHeaders()
       });
 
@@ -130,7 +131,7 @@ function GitHubIntegration() {
   const handleConnect = async () => {
     try {
       setIsSubmitting(true);
-      const res = await fetch('http://localhost:5000/api/github/auth-url', {
+      const res = await fetch(`${API_BASE_URL}/api/github/auth-url`, {
         headers: getAuthHeaders()
       });
 
@@ -171,7 +172,7 @@ function GitHubIntegration() {
 
     try {
       setIsSubmitting(true);
-      const res = await fetch('http://localhost:5000/api/github/disconnect', {
+      const res = await fetch(`${API_BASE_URL}/api/github/disconnect`, {
         method: 'POST',
         headers: getAuthHeaders()
       });
@@ -203,7 +204,7 @@ function GitHubIntegration() {
   const handleSaveRepo = async (repoNameToSave) => {
     try {
       setIsSubmitting(true);
-      const res = await fetch('http://localhost:5000/api/github/select-repo', {
+      const res = await fetch(`${API_BASE_URL}/api/github/select-repo`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ repoName: repoNameToSave || selectedRepo })
@@ -239,7 +240,7 @@ function GitHubIntegration() {
 
     try {
       setIsSubmitting(true);
-      const res = await fetch('http://localhost:5000/api/github/create-repo', {
+      const res = await fetch(`${API_BASE_URL}/api/github/create-repo`, {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({ repoName: newRepoName.trim() })
@@ -278,7 +279,7 @@ function GitHubIntegration() {
         text: '🔄 Synchronizing past Accepted submissions to your GitHub repository...'
       });
 
-      const res = await fetch('http://localhost:5000/api/github/sync-all', {
+      const res = await fetch(`${API_BASE_URL}/api/github/sync-all`, {
         method: 'POST',
         headers: getAuthHeaders()
       });

@@ -1,9 +1,16 @@
 // config/db.js
 // This file manages the connection between our Express server and the MongoDB database using Mongoose.
 
-// Ensure reliable DNS resolution for MongoDB Atlas SRV connection strings on Windows
-const dns = require('node:dns');
-dns.setServers(['8.8.8.8', '1.1.1.1']);
+// Ensure reliable DNS resolution for MongoDB Atlas SRV connection strings on Windows local development
+// Windows-only: Do not force public DNS servers on Render Linux containers
+if (process.platform === 'win32' && process.env.NODE_ENV !== 'production') {
+  try {
+    const dns = require('node:dns');
+    dns.setServers(['8.8.8.8', '1.1.1.1']);
+  } catch (err) {
+    // Ignore DNS override errors
+  }
+}
 
 const mongoose = require('mongoose');
 

@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 function TodoList() {
   const { token, logout } = useAuth();
@@ -37,7 +38,7 @@ function TodoList() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_BASE_URL}/api/tasks`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -75,7 +76,7 @@ function TodoList() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/tasks', {
+      const response = await fetch(`${API_BASE_URL}/api/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +119,7 @@ function TodoList() {
     try {
       const updatedStatus = !task.completed;
 
-      const response = await fetch(`http://localhost:5000/api/tasks/${task._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${task._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -152,7 +153,7 @@ function TodoList() {
     if (!window.confirm('Are you sure you want to delete this study task?')) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${taskId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
@@ -194,7 +195,7 @@ function TodoList() {
 
     setIsSavingEdit(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/tasks/${editingTask._id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/tasks/${editingTask._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

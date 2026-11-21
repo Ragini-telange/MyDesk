@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 
 function Dashboard() {
   const { token, logout } = useAuth();
@@ -21,7 +22,7 @@ function Dashboard() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/dashboard', {
+      const response = await fetch(`${API_BASE_URL}/api/dashboard`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

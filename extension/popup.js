@@ -14,37 +14,53 @@
 'use strict';
 
 // -----------------------------------------------------------------
-// CONFIGURATION — change these if you deploy to a different host
+// CONFIGURATION
+// In development: points to local Express (5000) and Vite (5173).
+// In production: switch mode to 'production' and set your live Render & Vercel URLs.
 // -----------------------------------------------------------------
-const API_BASE = 'http://localhost:5000';    // Express backend
-const APP_BASE = 'http://localhost:5173';    // React frontend (Vite)
+const ENV_CONFIG = {
+  // Mode: 'development' | 'production'
+  mode: 'development',
+  development: {
+    API_BASE: 'http://localhost:5000',
+    APP_BASE: 'http://localhost:5173'
+  },
+  production: {
+    API_BASE: 'https://mydesk-backend.onrender.com', // Replace with your live Render backend URL
+    APP_BASE: 'https://mydesk.vercel.app'           // Replace with your live Vercel frontend URL
+  }
+};
+
+const CURRENT_ENV = ENV_CONFIG[ENV_CONFIG.mode] || ENV_CONFIG.development;
+const API_BASE = CURRENT_ENV.API_BASE;
+const APP_BASE = CURRENT_ENV.APP_BASE;
 
 // Keys used in chrome.storage.local
 const STORAGE_TOKEN_KEY = 'mydesk_token';
-const STORAGE_USER_KEY  = 'mydesk_user';
+const STORAGE_USER_KEY = 'mydesk_user';
 
 // -----------------------------------------------------------------
 // ELEMENT REFERENCES
 // -----------------------------------------------------------------
-const loadingView   = document.getElementById('loading-view');
-const loginView     = document.getElementById('login-view');
+const loadingView = document.getElementById('loading-view');
+const loginView = document.getElementById('login-view');
 const dashboardView = document.getElementById('dashboard-view');
 
-const loginError     = document.getElementById('login-error');
-const emailInput     = document.getElementById('email-input');
-const passwordInput  = document.getElementById('password-input');
-const loginBtn       = document.getElementById('login-btn');
+const loginError = document.getElementById('login-error');
+const emailInput = document.getElementById('email-input');
+const passwordInput = document.getElementById('password-input');
+const loginBtn = document.getElementById('login-btn');
 
-const userNameEl     = document.getElementById('user-name');
-const userEmailEl    = document.getElementById('user-email');
-const logoutBtn      = document.getElementById('logout-btn');
+const userNameEl = document.getElementById('user-name');
+const userEmailEl = document.getElementById('user-email');
+const logoutBtn = document.getElementById('logout-btn');
 
 const tasksCompletedEl = document.getElementById('tasks-completed');
-const tasksTotalEl     = document.getElementById('tasks-total');
-const dsaSolvedEl      = document.getElementById('dsa-solved');
-const githubStatusEl   = document.getElementById('github-status');
+const tasksTotalEl = document.getElementById('tasks-total');
+const dsaSolvedEl = document.getElementById('dsa-solved');
+const githubStatusEl = document.getElementById('github-status');
 
-const openMydeskBtn  = document.getElementById('open-mydesk-btn');
+const openMydeskBtn = document.getElementById('open-mydesk-btn');
 
 // -----------------------------------------------------------------
 // VIEW HELPERS
@@ -79,7 +95,7 @@ function getStoredCredentials() {
     chrome.storage.local.get([STORAGE_TOKEN_KEY, STORAGE_USER_KEY], (result) => {
       resolve({
         token: result[STORAGE_TOKEN_KEY] || null,
-        user:  result[STORAGE_USER_KEY]  || null
+        user: result[STORAGE_USER_KEY] || null
       });
     });
   });
@@ -147,7 +163,7 @@ async function apiFetch(path, token, options = {}) {
 async function handleLogin() {
   clearError();
 
-  const email    = emailInput.value.trim();
+  const email = emailInput.value.trim();
   const password = passwordInput.value;
 
   // Basic client-side validation
@@ -199,7 +215,7 @@ async function handleLogin() {
 async function handleLogout() {
   await clearCredentials();
   // Reset login form
-  emailInput.value    = '';
+  emailInput.value = '';
   passwordInput.value = '';
   clearError();
   showView(loginView);
@@ -216,7 +232,7 @@ async function handleLogout() {
 async function loadDashboard(token, user) {
   // Show dashboard immediately with cached user name while data loads
   if (user) {
-    userNameEl.textContent  = user.name  || 'Student';
+    userNameEl.textContent = user.name || 'Student';
     userEmailEl.textContent = user.email || '';
   }
 
@@ -236,9 +252,9 @@ async function loadDashboard(token, user) {
 
     // Server error — show partial dashboard with "unavailable" stats
     tasksCompletedEl.textContent = '—';
-    tasksTotalEl.textContent     = '—';
-    dsaSolvedEl.textContent      = '—';
-    githubStatusEl.textContent   = 'Server unavailable';
+    tasksTotalEl.textContent = '—';
+    dsaSolvedEl.textContent = '—';
+    githubStatusEl.textContent = 'Server unavailable';
     return;
   }
 
@@ -246,14 +262,14 @@ async function loadDashboard(token, user) {
 
   // Update user info from server response (more reliable than cached)
   if (student) {
-    userNameEl.textContent  = student.name  || 'Student';
+    userNameEl.textContent = student.name || 'Student';
     userEmailEl.textContent = student.email || '';
   }
 
   // ---- Tasks ----
   if (stats && stats.tasks) {
     tasksCompletedEl.textContent = stats.tasks.completed ?? '0';
-    tasksTotalEl.textContent     = stats.tasks.total     ?? '0';
+    tasksTotalEl.textContent = stats.tasks.total ?? '0';
   }
 
   // ---- DSA ----
@@ -329,13 +345,13 @@ async function init() {
       // The user is not "logged out" just because the server is temporarily down
       showView(dashboardView);
       if (user) {
-        userNameEl.textContent  = user.name  || 'Student';
+        userNameEl.textContent = user.name || 'Student';
         userEmailEl.textContent = user.email || '';
       }
       tasksCompletedEl.textContent = '—';
-      tasksTotalEl.textContent     = '—';
-      dsaSolvedEl.textContent      = '—';
-      githubStatusEl.textContent   = 'Server unavailable';
+      tasksTotalEl.textContent = '—';
+      dsaSolvedEl.textContent = '—';
+      githubStatusEl.textContent = 'Server unavailable';
     }
     return;
   }
@@ -344,13 +360,13 @@ async function init() {
   const { stats, student } = result.data;
 
   if (student) {
-    userNameEl.textContent  = student.name  || 'Student';
+    userNameEl.textContent = student.name || 'Student';
     userEmailEl.textContent = student.email || '';
   }
 
   if (stats && stats.tasks) {
     tasksCompletedEl.textContent = stats.tasks.completed ?? '0';
-    tasksTotalEl.textContent     = stats.tasks.total     ?? '0';
+    tasksTotalEl.textContent = stats.tasks.total ?? '0';
   }
 
   if (stats && stats.dsa) {
